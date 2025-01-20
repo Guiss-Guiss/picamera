@@ -12,8 +12,12 @@ Une interface web pour contrôler une caméra Raspberry Pi utilisant Python Flas
 
 ## 📋 Prérequis
 
-### 🤖 Raspberry Pi Zero 2 W
-![Raspberry Pi Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
+
+### 🤖 [Raspberry Pi Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
+
+### 📷 [Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/)
+
+### 🏠 [Boîtier (impression 3D)](https://www.printables.com/model/1090727-case-for-raspberry-pi-zero-2w-and-camera-module-3)
 
 ### 📷 Raspberry Pi Camera Module 3
 ![Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/)
