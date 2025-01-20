@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Application de contrôle de caméra web">
+    <meta name="robots" content="noindex, nofollow">
+    <title>PiCamera</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">PiCamera</h1>
+
+        <div class="flux-container">
+            <img id="flux" alt="Flux Caméra">
+        </div>
+
+        <div class="boutons-container">
+            <button onclick="capturerPhoto()" class="btn btn-bleu">Prendre une Photo</button>
+            <button onclick="basculerParametres()" class="btn btn-gris">Paramètres</button>
+            <button onclick="basculerCaptureAuto()" class="btn btn-vert">Capture Auto</button>
+            <a href="/galerie" class="btn btn-bleu">Voir la Galerie</a>
+        </div>
+
+        <div id="settingsPanel" class="panel" style="display: none;">
+            <h2>Paramètres</h2>
+
+            <div class="reglage-groupe">
+                <label for="exposure">Temps d'exposition</label>
+                <select id="exposure" onchange="mettreAJourParametres()">
+                    <option value="0">Auto</option>
+                    <option value="125">1/8000s</option>
+                    <option value="250">1/4000s</option>
+                    <option value="500">1/2000s</option>
+                    <option value="1000">1/1000s</option>
+                    <option value="2000">1/500s</option>
+                    <option value="4000">1/250s</option>
+                    <option value="8000">1/125s</option>
+                    <option value="16667">1/60s</option>
+                    <option value="33333">1/30s</option>
+                    <option value="66667">1/15s</option>
+                    <option value="125000">1/8s</option>
+                    <option value="250000">1/4s</option>
+                    <option value="500000">1/2s</option>
+                    <option value="1000000">1s</option>
+                    <option value="2000000">2s</option>
+                    <option value="4000000">4s</option>
+                    <option value="8000000">8s</option>
+                    <option value="16000000">16s</option>
+                    <option value="30000000">30s</option>
+                    <option value="60000000">1m</option>
+                    <option value="120000000">2m</option>
+                    <option value="240000000">4m</option>
+                    <option value="480000000">8m</option>
+                    <option value="960000000">16m</option>
+                </select>
+            </div>
+
+            <div class="reglage-groupe">
+                <label for="gain">Gain Analogique</label>
+                <input type="range" id="gain" min="1" max="8" step="0.1" value="1"
+                       onchange="mettreAJourParametres()" oninput="document.getElementById('gainValue').textContent = this.value">
+                <span id="gainValue" class="value-display">1.0</span>
+            </div>
+
+            <div class="reglage-groupe">
+                <label for="brightness">Luminosité</label>
+                <input type="range" id="brightness" min="-1" max="1" step="0.1" value="0"
+                       onchange="mettreAJourParametres()" oninput="document.getElementById('brightnessValue').textContent = this.value">
+                <span id="brightnessValue" class="value-display">0.0</span>
+            </div>
+
+            <div class="reglage-groupe">
+                <label for="contrast">Contraste</label>
+                <input type="range" id="contrast" min="0" max="2" step="0.1" value="1"
+                       onchange="mettreAJourParametres()" oninput="document.getElementById('contrastValue').textContent = this.value">
+                <span id="contrastValue" class="value-display">1.0</span>
+            </div>
+
+            <div class="reglage-groupe">
+                <label for="saturation">Saturation</label>
+                <input type="range" id="saturation" min="0" max="2" step="0.1" value="1"
+                       onchange="mettreAJourParametres()" oninput="document.getElementById('saturationValue').textContent = this.value">
+                <span id="saturationValue" class="value-display">1.0</span>
+            </div>
+
+            <div class="reglage-groupe">
+                <label for="sharpness">Netteté</label>
+                <input type="range" id="sharpness" min="0" max="2" step="0.1" value="1"
+                       onchange="mettreAJourParametres()" oninput="document.getElementById('sharpnessValue').textContent = this.value">
+                <span id="sharpnessValue" class="value-display">1.0</span>
+            </div>
+        </div>
+
+        <div id="autoCapturePanel" class="panel" style="display: none;">
+            <h2>Capture Automatique</h2>
+            <div class="reglage-groupe">
+                <label for="interval">Intervalle (secondes)</label>
+                <input type="number" id="interval" min="5" value="60">
+            </div>
+            <div class="reglage-groupe">
+                <label for="duration">Durée (minutes)</label>
+                <input type="number" id="duration" min="1" value="60">
+            </div>
+            <div class="boutons-container">
+                <button onclick="demarrerCaptureAuto()" class="btn btn-vert">Démarrer</button>
+                <button onclick="arreterCaptureAuto()" class="btn btn-rouge">Arrêter</button>
+            </div>
+        </div>
+    </div>
+    <div id="toast" style="display: none;" class="toast"></div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
