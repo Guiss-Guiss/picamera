@@ -35,7 +35,7 @@ Une interface web pour contrôler une caméra Raspberry Pi utilisant Python Flas
 ssh pi@adresse_ip_du_raspberry_pi
 sudo raspi-config # Allez à Options Avancées et choisissez Expand Filesystem
 sudo apt update && sudo apt upgrade -y
-sudo apt install python3-picamera2 python3-flask -y
+sudo apt install python3-picamera2 python3-flask git -y
 ```
 
 3. 📥 Cloner le dépôt
