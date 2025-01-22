@@ -1,7 +1,6 @@
-import io
 import threading
 import logging
-from noyau.camera import obtenir_camera, nettoyer_camera
+from noyau.camera import obtenir_camera
 from flask import jsonify, url_for
 from datetime import datetime, timedelta
 import os
