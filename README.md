@@ -41,7 +41,7 @@ sudo apt install python3-picamera2 python3-flask git -y
 3. 📥 Cloner le dépôt
 ```bash
 git clone https://github.com/Guiss-Guiss/picamera.git
-cd picamera-main
+cd picamera
 ```
 
 ## 🚀 Configuration du démarrage automatique
@@ -60,9 +60,9 @@ After=network.target
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/home/pi/picamera-main
-Environment=PYTHONPATH=/home/pi/picamera-main
-ExecStart=/usr/bin/python3 /home/pi/picamera-main/app.py
+WorkingDirectory=/home/pi/picamera
+Environment=PYTHONPATH=/home/pi/picamera
+ExecStart=/usr/bin/python3 /home/pi/picamera/app.py
 Restart=always
 RestartSec=10
 
