@@ -1,7 +1,6 @@
 import io
 import threading
 import logging
-from flask import jsonify
 from picamera2.encoders import JpegEncoder
 from picamera2.outputs import FileOutput
 from noyau.camera import obtenir_camera
