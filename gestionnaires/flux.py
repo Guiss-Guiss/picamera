@@ -46,13 +46,27 @@ def generer_images():
             )
             camera.configure(config)
 
+            # Définir les contrôles de base
             controles = {
                 "AeEnable": 1,
                 "AwbEnable": 1,
-                "AfMode": 2,
                 "NoiseReductionMode": 2,
                 "FrameRate": 15.0
             }
+            
+            # Vérifier si le contrôle AfMode est supporté
+            try:
+                # Récupérer les contrôles supportés
+                controles_supportes = camera.camera_controls
+                if "AfMode" in controles_supportes:
+                    controles["AfMode"] = 2
+                    logging.info("Mode autofocus activé")
+                else:
+                    logging.info("Mode autofocus non supporté par cette caméra")
+            except Exception as e:
+                logging.warning(f"Impossible de vérifier les contrôles disponibles: {e}")
+            
+            # Appliquer les contrôles
             camera.set_controls(controles)
 
             encodeur = JpegEncoder(q=70)
