@@ -3,16 +3,16 @@ import logging
 import threading
 import time
 
-verrou_camera = threading.RLock()
+camera_lock = threading.RLock()
 camera = None
 
-def initialiser_camera():
+def initialize_camera():
     global camera
-    with verrou_camera:
+    with camera_lock:
         try:
             if camera is not None:
-                nettoyer_camera()
-            
+                cleanup_camera()
+
             time.sleep(0.5)
             camera = Picamera2()
             config = camera.create_preview_configuration(
@@ -22,27 +22,27 @@ def initialiser_camera():
             camera.configure(config)
             return True
         except Exception as e:
-            logging.error(f"Erreur initialisation caméra: {e}")
+            logging.error(f"Camera initialization error: {e}")
             camera = None
             return False
 
-def obtenir_camera(force_reset=False):
+def get_camera(force_reset=False):
     global camera
-    with verrou_camera:
+    with camera_lock:
         if force_reset or camera is None:
             try:
                 if camera is not None:
-                    nettoyer_camera()
-                    time.sleep(1)  # Délai plus long pour reset
-                initialiser_camera()
+                    cleanup_camera()
+                    time.sleep(1)  # Longer delay for reset
+                initialize_camera()
             except Exception as e:
-                logging.error(f"Erreur reset caméra: {e}")
+                logging.error(f"Camera reset error: {e}")
                 camera = None
         return camera
 
-def nettoyer_camera():
+def cleanup_camera():
     global camera
-    with verrou_camera:
+    with camera_lock:
         if camera:
             try:
                 if hasattr(camera, 'started') and camera.started:
@@ -51,6 +51,6 @@ def nettoyer_camera():
                 camera.close()
                 time.sleep(0.2)
             except Exception as e:
-                logging.error(f"Erreur nettoyage caméra: {e}")
+                logging.error(f"Camera cleanup error: {e}")
             finally:
                 camera = None

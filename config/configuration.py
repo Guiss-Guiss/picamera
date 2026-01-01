@@ -1,22 +1,22 @@
 import os
 
-# Définir le chemin de base
+# Define base path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Configuration globale
-DOSSIER_UPLOAD = os.path.join(BASE_DIR, '..', 'static', 'media')
-TAILLE_MAX_CONTENU = 16 * 1024 * 1024  # 16 Mo
-DOSSIER_LOGS = os.path.join(BASE_DIR, '..', 'logs')
-TAILLE_MAX_LOG = 10 * 1024 * 1024  # 10 Mo
-NOMBRE_BACKUP_LOGS = 5  # Nombre de fichiers de sauvegarde
+# Global configuration
+UPLOAD_FOLDER = os.path.join(BASE_DIR, '..', 'static', 'media')
+MAX_CONTENT_SIZE = 16 * 1024 * 1024  # 16 MB
+LOGS_FOLDER = os.path.join(BASE_DIR, '..', 'logs')
+MAX_LOG_SIZE = 10 * 1024 * 1024  # 10 MB
+NUM_BACKUP_LOGS = 5  # Number of backup files
 
 CONFIG = {
-    'DOSSIER_UPLOAD': DOSSIER_UPLOAD,
-    'TAILLE_MAX_CONTENU': TAILLE_MAX_CONTENU,
-    'DOSSIER_LOGS': DOSSIER_LOGS,
-    'TAILLE_MAX_LOG': TAILLE_MAX_LOG,
-    'NOMBRE_BACKUP_LOGS': NOMBRE_BACKUP_LOGS
+    'UPLOAD_FOLDER': UPLOAD_FOLDER,
+    'MAX_CONTENT_SIZE': MAX_CONTENT_SIZE,
+    'LOGS_FOLDER': LOGS_FOLDER,
+    'MAX_LOG_SIZE': MAX_LOG_SIZE,
+    'NUM_BACKUP_LOGS': NUM_BACKUP_LOGS
 }
 
-# Exportation explicite
-__all__ = ['DOSSIER_UPLOAD', 'TAILLE_MAX_CONTENU', 'DOSSIER_LOGS', 'TAILLE_MAX_LOG', 'NOMBRE_BACKUP_LOGS', 'CONFIG']
+# Explicit export
+__all__ = ['UPLOAD_FOLDER', 'MAX_CONTENT_SIZE', 'LOGS_FOLDER', 'MAX_LOG_SIZE', 'NUM_BACKUP_LOGS', 'CONFIG']

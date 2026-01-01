@@ -1,82 +1,82 @@
 from flask import Flask, render_template, jsonify, request, Response
 from config.configuration import CONFIG
-from noyau.journalisation import configurer_journalisation
-from gestionnaires.capture import capturer, demarrer_capture_auto, arreter_capture_auto
-from gestionnaires.flux import demarrer_flux, arreter_flux, generer_images
-from gestionnaires.parametres import obtenir_parametres, mettre_a_jour_parametres
-from gestionnaires.photos import api_photos, supprimer_photo
+from core.logging_config import configure_logging
+from handlers.capture import capture, start_auto_capture, stop_auto_capture
+from handlers.stream import start_stream, stop_stream, generate_images
+from handlers.parameters import get_parameters, update_parameters
+from handlers.photos import api_photos, delete_photo
 import atexit
 
-# Initialisation de l'application Flask
+# Flask application initialization
 app = Flask(__name__)
 
-# Chargement de la configuration
+# Load configuration
 app.config.update(CONFIG)
 
-# Configuration de la journalisation
-configurer_journalisation()
+# Configure logging
+configure_logging()
 
-# Routes principales
+# Main routes
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/galerie')
-def galerie():
-    return render_template('galerie.html')
+@app.route('/gallery')
+def gallery():
+    return render_template('gallery.html')
 
-@app.route('/flux')
-def flux():
-    """Route pour le flux vidéo"""
+@app.route('/stream')
+def stream():
+    """Video stream route"""
     return Response(
-        generer_images(),
+        generate_images(),
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
 
-@app.route('/arreter_flux')
-def route_arreter_flux():
-    """Route pour arrêter le flux vidéo"""
-    resultat = arreter_flux()
-    return jsonify(resultat)
+@app.route('/stop_stream')
+def route_stop_stream():
+    """Route to stop video stream"""
+    result = stop_stream()
+    return jsonify(result)
 
 @app.route('/capture', methods=['POST'])
-def route_capturer():
-    return capturer()
+def route_capture():
+    return capture()
 
-@app.route('/demarrer_capture_auto', methods=['POST'])
-def route_demarrer_capture_auto():
-    return demarrer_capture_auto(request.json)
+@app.route('/start_auto_capture', methods=['POST'])
+def route_start_auto_capture():
+    return start_auto_capture(request.json)
 
-@app.route('/arreter_capture_auto')
-def route_arreter_capture_auto():
-    return arreter_capture_auto()
+@app.route('/stop_auto_capture')
+def route_stop_auto_capture():
+    return stop_auto_capture()
 
-@app.route('/parametres', methods=['GET', 'POST'])
-def route_parametres():
+@app.route('/parameters', methods=['GET', 'POST'])
+def route_parameters():
     if request.method == 'GET':
-        return obtenir_parametres()
+        return get_parameters()
     elif request.method == 'POST':
-        return mettre_a_jour_parametres(request.json)
+        return update_parameters(request.json)
 
 @app.route('/photos')
-def route_api_photos():
+def route_photos():
     return api_photos()
 
-@app.route('/supprimer', methods=['POST'])
-def route_supprimer_photo():
-    return supprimer_photo(request.json)
+@app.route('/delete', methods=['POST'])
+def route_delete_photo():
+    return delete_photo(request.json)
 
-# Gestion des erreurs
+# Error handling
 @app.errorhandler(404)
-def erreur_non_trouve(erreur):
-    return jsonify({'succes': False, 'erreur': 'Ressource non trouvée'}), 404
+def error_not_found(error):
+    return jsonify({'success': False, 'error': 'Resource not found'}), 404
 
 @app.errorhandler(500)
-def erreur_interne(erreur):
-    return jsonify({'succes': False, 'erreur': 'Erreur interne du serveur'}), 500
+def error_internal(error):
+    return jsonify({'success': False, 'error': 'Internal server error'}), 500
 
-# Nettoyage à la sortie
-atexit.register(lambda: print("Nettoyage des ressources"))
+# Cleanup on exit
+atexit.register(lambda: print("Cleaning up resources"))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True, threaded=True)
