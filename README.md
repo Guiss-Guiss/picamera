@@ -1,57 +1,57 @@
-# 📸 Interface Web PiCamera
+# 📸 PiCamera Web Interface
 
-Une interface web pour contrôler une caméra Raspberry Pi utilisant Python Flask et picamera2.
+A web interface to control a Raspberry Pi camera using Python Flask and picamera2.
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-- 🎥 Streaming vidéo en direct
-- 📷 Capture de photos avec paramètres ajustables
-- ⏱️ Séquences de capture automatique
-- 🖼️ Gestion de galerie photos
-- 🎛️ Contrôle des paramètres de la caméra (exposition, gain, luminosité, etc.)
+- 🎥 Live video streaming
+- 📷 Photo capture with adjustable settings
+- ⏱️ Automatic capture sequences
+- 🖼️ Photo gallery management
+- 🎛️ Camera settings control (exposure, gain, brightness, etc.)
 
-## 📋 Prérequis
+## 📋 Prerequisites
 
 
 ### 🤖 [Raspberry Pi Zero 2 W](https://www.raspberrypi.com/products/raspberry-pi-zero-2-w/)
 
-### 📷 [Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/), ou
+### 📷 [Raspberry Pi Camera Module 3](https://www.raspberrypi.com/products/camera-module-3/), or
 ### 📷 [Raspberry Pi HQ Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
-### 🏠 [Boîtier (impression 3D)](https://www.printables.com/model/1090727-case-for-raspberry-pi-zero-2w-and-camera-module-3)
+### 🏠 [Case (3D print)](https://www.printables.com/model/1090727-case-for-raspberry-pi-zero-2w-and-camera-module-3)
 
 
 
 - 💾 Raspberry Pi OS Lite (64-bit)
 - 🐍 Python 3.x
-- 🌐 Navigateur web
+- 🌐 Web browser
 
 ## 🛠️ Installation
 
-1. 💽 Flasher Raspberry Pi OS avec Raspberry Pi Imager
-   - Activer SSH pendant la configuration
+1. 💽 Flash Raspberry Pi OS with Raspberry Pi Imager
+   - Enable SSH during configuration
 
-2. 🔄 Mettre à jour le système et étendre le système de fichiers
+2. 🔄 Update the system and expand the filesystem
 ```bash
-ssh pi@adresse_ip_du_raspberry_pi
-sudo raspi-config # Allez à Options Avancées et choisissez Expand Filesystem
+ssh pi@raspberry_pi_ip_address
+sudo raspi-config # Go to Advanced Options and choose Expand Filesystem
 sudo apt update && sudo apt upgrade -y
 sudo apt install python3-picamera2 python3-flask git -y
 ```
 
-3. 📥 Cloner le dépôt
+3. 📥 Clone the repository
 ```bash
 git clone https://github.com/Guiss-Guiss/picamera.git
 cd picamera
 ```
 
-## 🚀 Configuration du démarrage automatique
+## 🚀 Auto-start Configuration
 
-1. ⚙️ Créer le fichier de service systemd :
+1. ⚙️ Create the systemd service file:
 ```bash
 sudo nano /etc/systemd/system/picamera.service
 ```
 
-2. 📝 Ajouter le contenu suivant :
+2. 📝 Add the following content:
 ```ini
 [Unit]
 Description=PiCamera
@@ -70,31 +70,31 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-3. ▶️ Activer et démarrer le service :
+3. ▶️ Enable and start the service:
 ```bash
 sudo systemctl enable picamera.service
 sudo systemctl start picamera.service
 ```
 
-## 📖 Utilisation
+## 📖 Usage
 
-1. 🌐 Accéder à l'interface via `http://ip-du-raspberry-pi:5001`
-2. 🎮 Utiliser les contrôles pour :
-   - 📸 Capturer des photos
-   - ⏱️ Configurer des séquences de capture automatique
-   - 🎛️ Ajuster les paramètres de la caméra
-   - 🖼️ Visualiser et gérer les photos capturées
+1. 🌐 Access the interface at `http://raspberry-pi-ip:5001`
+2. 🎮 Use the controls to:
+   - 📸 Capture photos
+   - ⏱️ Configure automatic capture sequences
+   - 🎛️ Adjust camera settings
+   - 🖼️ View and manage captured photos
 
 
 
-## 🤝 Contribution
+## 🤝 Contributing
 
-1. 🔀 Forker le dépôt
-2. 🌿 Créer une branche pour votre fonctionnalité
-3. ✅ Commettre vos changements
-4. ⬆️ Pousser vers la branche
-5. 📩 Créer une Pull Request
+1. 🔀 Fork the repository
+2. 🌿 Create a branch for your feature
+3. ✅ Commit your changes
+4. ⬆️ Push to the branch
+5. 📩 Create a Pull Request
 
-## 📜 Licence
+## 📜 License
 
-Ce projet est sous licence MIT.
+This project is licensed under the MIT License.

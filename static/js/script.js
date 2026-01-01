@@ -1,229 +1,230 @@
-let flux_actif = false;
+let streamActive = false;
 
-async function requete(url, methode = 'GET', donnees = null) {
+async function request(url, method = 'GET', data = null) {
     try {
         const options = {
-            method: methode,
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             }
         };
-        
-        if (donnees) {
-            options.body = JSON.stringify(donnees);
+
+        if (data) {
+            options.body = JSON.stringify(data);
         }
 
-        const reponse = await fetch(url, options);
-        
-        if (!reponse.ok) {
-            throw new Error(`Erreur HTTP! statut: ${reponse.status}`);
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error! status: ${response.status}`);
         }
-        
-        return await reponse.json();
-    } catch (erreur) {
-        afficherNotification(erreur.message, 'error');
-        throw erreur;
+
+        return await response.json();
+    } catch (error) {
+        showNotification(error.message, 'error');
+        throw error;
     }
 }
 
-function afficherNotification(message, type = 'success') {
+function showNotification(message, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.className = `toast toast-${type}`;
     toast.style.display = 'block';
-    
+
     setTimeout(() => {
         toast.style.display = 'none';
     }, 3000);
 }
 
-function demarrerFlux() {
-    const img = document.getElementById('flux');
-    img.src = `/flux?t=${Date.now()}`;
-    flux_actif = true;
-    
+function startStream() {
+    const img = document.getElementById('stream');
+    img.src = `/stream?t=${Date.now()}`;
+    streamActive = true;
+
     img.onerror = () => {
-        if (flux_actif) {
+        if (streamActive) {
             setTimeout(() => {
-                img.src = `/flux?t=${Date.now()}`;
+                img.src = `/stream?t=${Date.now()}`;
             }, 1000);
         }
     };
 }
 
-function arreterFlux() {
-    if (flux_actif) {
-        requete('/arreter_flux')
+function stopStream() {
+    if (streamActive) {
+        request('/stop_stream')
             .then(() => {
-                flux_actif = false;
-                const img = document.getElementById('flux');
+                streamActive = false;
+                const img = document.getElementById('stream');
                 img.src = '';
             })
-            .catch(erreur => {
-                console.error('Erreur lors de l\'arrêt du flux:', erreur);
-                afficherNotification('Erreur lors de l\'arrêt du flux', 'error');
+            .catch(error => {
+                console.error('Error stopping stream:', error);
+                showNotification('Error stopping stream', 'error');
             });
     }
 }
 
-async function capturerPhoto() {
+async function capturePhoto() {
     try {
-        const response = await requete('/capture', 'POST');
-        if (response.succes) {
-            afficherNotification('Photo capturée avec succès');
+        const response = await request('/capture', 'POST');
+        if (response.success) {
+            showNotification('Photo captured successfully');
         }
-    } catch (erreur) {
-        afficherNotification('Échec de la capture', 'error');
-        console.error('Erreur de capture:', erreur);
+    } catch (error) {
+        showNotification('Capture failed', 'error');
+        console.error('Capture error:', error);
     }
 }
 
-async function mettreAJourParametres() {
+async function updateParameters() {
     try {
-        const donnees = {
-            exposition: parseInt(document.getElementById('exposure').value),
+        const data = {
+            exposure: parseInt(document.getElementById('exposure').value),
             gain: parseFloat(document.getElementById('gain').value),
-            luminosite: parseFloat(document.getElementById('brightness').value),
-            contraste: parseFloat(document.getElementById('contrast').value),
+            brightness: parseFloat(document.getElementById('brightness').value),
+            contrast: parseFloat(document.getElementById('contrast').value),
             saturation: parseFloat(document.getElementById('saturation').value),
-            nettete: parseFloat(document.getElementById('sharpness').value)
+            sharpness: parseFloat(document.getElementById('sharpness').value)
         };
 
-        await requete('/parametres', 'POST', donnees);
-        afficherNotification('Paramètres mis à jour avec succès');
-    } catch (erreur) {
-        afficherNotification('Échec de la mise à jour des paramètres', 'error');
-        console.error('Erreur de mise à jour des paramètres:', erreur);
+        await request('/parameters', 'POST', data);
+        showNotification('Settings updated successfully');
+    } catch (error) {
+        showNotification('Failed to update settings', 'error');
+        console.error('Settings update error:', error);
     }
 }
 
-async function chargerParametres() {
+async function loadParameters() {
     try {
-        const parametres = await requete('/parametres');
-        if (parametres) {
-            document.getElementById('exposure').value = parametres.exposition || 16000;
-            document.getElementById('gain').value = parametres.gain || 1.0;
-            document.getElementById('brightness').value = parametres.luminosite || 0;
-            document.getElementById('contrast').value = parametres.contraste || 1.0;
-            document.getElementById('saturation').value = parametres.saturation || 1.0;
-            document.getElementById('sharpness').value = parametres.nettete || 1.0;
-            
-            document.getElementById('gainValue').textContent = parametres.gain?.toFixed(1) || '1.0';
-            document.getElementById('brightnessValue').textContent = parametres.luminosite?.toFixed(1) || '0.0';
-            document.getElementById('contrastValue').textContent = parametres.contraste?.toFixed(1) || '1.0';
-            document.getElementById('saturationValue').textContent = parametres.saturation?.toFixed(1) || '1.0';
-            document.getElementById('sharpnessValue').textContent = parametres.nettete?.toFixed(1) || '1.0';
+        const result = await request('/parameters');
+        if (result && result.parameters) {
+            const parameters = result.parameters;
+            document.getElementById('exposure').value = parameters.exposure || 16000;
+            document.getElementById('gain').value = parameters.gain || 1.0;
+            document.getElementById('brightness').value = parameters.brightness || 0;
+            document.getElementById('contrast').value = parameters.contrast || 1.0;
+            document.getElementById('saturation').value = parameters.saturation || 1.0;
+            document.getElementById('sharpness').value = parameters.sharpness || 1.0;
+
+            document.getElementById('gainValue').textContent = parameters.gain?.toFixed(1) || '1.0';
+            document.getElementById('brightnessValue').textContent = parameters.brightness?.toFixed(1) || '0.0';
+            document.getElementById('contrastValue').textContent = parameters.contrast?.toFixed(1) || '1.0';
+            document.getElementById('saturationValue').textContent = parameters.saturation?.toFixed(1) || '1.0';
+            document.getElementById('sharpnessValue').textContent = parameters.sharpness?.toFixed(1) || '1.0';
         }
-    } catch (erreur) {
-        afficherNotification('Échec du chargement des paramètres', 'error');
-        console.error('Erreur de chargement des paramètres:', erreur);
+    } catch (error) {
+        showNotification('Failed to load settings', 'error');
+        console.error('Settings load error:', error);
     }
 }
 
-async function demarrerCaptureAuto() {
+async function startAutoCapture() {
     try {
-        const intervalle = parseInt(document.getElementById('interval').value);
-        const duree = parseInt(document.getElementById('duration').value);
-        
-        if (intervalle < 5) {
-            afficherNotification('L\'intervalle minimum est de 5 secondes', 'error');
+        const interval = parseInt(document.getElementById('interval').value);
+        const duration = parseInt(document.getElementById('duration').value);
+
+        if (interval < 5) {
+            showNotification('Minimum interval is 5 seconds', 'error');
             return;
         }
-        
-        await requete('/demarrer_capture_auto', 'POST', { intervalle, duree });
-        afficherNotification('Capture automatique démarrée');
-    } catch (erreur) {
-        afficherNotification('Échec du démarrage de la capture automatique', 'error');
-        console.error('Erreur de démarrage de la capture auto:', erreur);
+
+        await request('/start_auto_capture', 'POST', { interval, duration });
+        showNotification('Automatic capture started');
+    } catch (error) {
+        showNotification('Failed to start automatic capture', 'error');
+        console.error('Auto capture start error:', error);
     }
 }
 
-async function arreterCaptureAuto() {
+async function stopAutoCapture() {
     try {
-        await requete('/arreter_capture_auto');
-        afficherNotification('Capture automatique arrêtée');
-    } catch (erreur) {
-        afficherNotification('Échec de l\'arrêt de la capture automatique', 'error');
-        console.error('Erreur d\'arrêt de la capture auto:', erreur);
+        await request('/stop_auto_capture');
+        showNotification('Automatic capture stopped');
+    } catch (error) {
+        showNotification('Failed to stop automatic capture', 'error');
+        console.error('Auto capture stop error:', error);
     }
 }
 
-function basculerParametres() {
-    const panneau = document.getElementById('settingsPanel');
-    panneau.style.display = panneau.style.display === 'none' ? 'block' : 'none';
+function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }
 
-function basculerCaptureAuto() {
-    const panneau = document.getElementById('autoCapturePanel');
-    panneau.style.display = panneau.style.display === 'none' ? 'block' : 'none';
+function toggleAutoCapture() {
+    const panel = document.getElementById('autoCapturePanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }
 
 function formatDate(timestamp) {
     const date = new Date(timestamp * 1000);
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit' 
+    const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     };
-    return date.toLocaleDateString('fr-FR', options);
+    return date.toLocaleDateString('en-US', options);
 }
 
-async function chargerGalerie() {
+async function loadGallery() {
     try {
-        const images = await requete('/photos');
-        const galerie = document.getElementById('gallery');
-        galerie.innerHTML = '';
-        
-        if (images.length === 0) {
-            galerie.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Aucune photo disponible</p>';
+        const result = await request('/photos');
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+
+        if (!result.success || result.photos.length === 0) {
+            gallery.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No photos available</p>';
             return;
         }
-        
-        images.forEach(image => {
+
+        result.photos.forEach(photo => {
             const div = document.createElement('div');
             div.className = 'grid-item';
             div.innerHTML = `
-                <img src="${image.chemin}" 
-                     alt="Photo prise le ${formatDate(image.date)}" 
+                <img src="${photo.path}"
+                     alt="Photo taken on ${formatDate(photo.date)}"
                      loading="lazy"
-                     title="Photo prise le ${formatDate(image.date)}">
+                     title="Photo taken on ${formatDate(photo.date)}">
                 <div class="image-overlay">
-                    <button onclick="supprimerPhoto('${image.nom_fichier}')" class="btn btn-rouge">
-                        Supprimer
+                    <button onclick="deletePhoto('${photo.filename}')" class="btn btn-rouge">
+                        Delete
                     </button>
                 </div>
             `;
-            galerie.appendChild(div);
+            gallery.appendChild(div);
         });
-    } catch (erreur) {
-        afficherNotification('Échec du chargement de la galerie', 'error');
-        console.error('Erreur de chargement de la galerie:', erreur);
+    } catch (error) {
+        showNotification('Failed to load gallery', 'error');
+        console.error('Gallery load error:', error);
     }
 }
 
-async function supprimerPhoto(nom_fichier) {
-    if (!confirm('Voulez-vous vraiment supprimer cette photo ?')) {
+async function deletePhoto(filename) {
+    if (!confirm('Are you sure you want to delete this photo?')) {
         return;
     }
 
     try {
-        await requete('/supprimer', 'POST', { nom_fichier });
-        afficherNotification('Photo supprimée avec succès');
-        chargerGalerie();
-    } catch (erreur) {
-        afficherNotification('Échec de la suppression de la photo', 'error');
-        console.error('Erreur de suppression:', erreur);
+        await request('/delete', 'POST', { filename });
+        showNotification('Photo deleted successfully');
+        loadGallery();
+    } catch (error) {
+        showNotification('Failed to delete photo', 'error');
+        console.error('Delete error:', error);
     }
 }
 
 window.onload = () => {
-    chargerParametres();
-    demarrerFlux();
+    loadParameters();
+    startStream();
 };
 
 window.onbeforeunload = () => {
-    arreterFlux();
+    stopStream();
 };

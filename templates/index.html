@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Application de contrôle de caméra web">
+    <meta name="description" content="Web camera control application">
     <meta name="robots" content="noindex, nofollow">
     <title>PiCamera</title>
     <link rel="stylesheet" href="/static/css/styles.css">
@@ -13,23 +13,23 @@
     <div class="container">
         <h1 style="text-align: center;">PiCamera</h1>
 
-        <div class="flux-container">
-            <img id="flux" alt="Flux Caméra">
+        <div class="stream-container">
+            <img id="stream" alt="Camera Stream">
         </div>
 
-        <div class="boutons-container">
-            <button onclick="capturerPhoto()" class="btn btn-bleu">Prendre une Photo</button>
-            <button onclick="basculerParametres()" class="btn btn-gris">Paramètres</button>
-            <button onclick="basculerCaptureAuto()" class="btn btn-vert">Capture Auto</button>
-            <a href="/galerie" class="btn btn-bleu">Voir la Galerie</a>
+        <div class="buttons-container">
+            <button onclick="capturePhoto()" class="btn btn-blue">Take a Photo</button>
+            <button onclick="toggleSettings()" class="btn btn-grey">Settings</button>
+            <button onclick="toggleAutoCapture()" class="btn btn-green">Auto Capture</button>
+            <a href="/gallery" class="btn btn-blue">View Gallery</a>
         </div>
 
         <div id="settingsPanel" class="panel" style="display: none;">
-            <h2>Paramètres</h2>
+            <h2>Settings</h2>
 
-            <div class="reglage-groupe">
-                <label for="exposure">Temps d'exposition</label>
-                <select id="exposure" onchange="mettreAJourParametres()">
+            <div class="setting-group">
+                <label for="exposure">Exposure Time</label>
+                <select id="exposure" onchange="updateParameters()">
                     <option value="0">Auto</option>
                     <option value="125">1/8000s</option>
                     <option value="250">1/4000s</option>
@@ -58,55 +58,55 @@
                 </select>
             </div>
 
-            <div class="reglage-groupe">
-                <label for="gain">Gain Analogique</label>
+            <div class="setting-group">
+                <label for="gain">Analog Gain</label>
                 <input type="range" id="gain" min="1" max="8" step="0.1" value="1"
-                       onchange="mettreAJourParametres()" oninput="document.getElementById('gainValue').textContent = this.value">
+                       onchange="updateParameters()" oninput="document.getElementById('gainValue').textContent = this.value">
                 <span id="gainValue" class="value-display">1.0</span>
             </div>
 
-            <div class="reglage-groupe">
-                <label for="brightness">Luminosité</label>
+            <div class="setting-group">
+                <label for="brightness">Brightness</label>
                 <input type="range" id="brightness" min="-1" max="1" step="0.1" value="0"
-                       onchange="mettreAJourParametres()" oninput="document.getElementById('brightnessValue').textContent = this.value">
+                       onchange="updateParameters()" oninput="document.getElementById('brightnessValue').textContent = this.value">
                 <span id="brightnessValue" class="value-display">0.0</span>
             </div>
 
-            <div class="reglage-groupe">
-                <label for="contrast">Contraste</label>
+            <div class="setting-group">
+                <label for="contrast">Contrast</label>
                 <input type="range" id="contrast" min="0" max="2" step="0.1" value="1"
-                       onchange="mettreAJourParametres()" oninput="document.getElementById('contrastValue').textContent = this.value">
+                       onchange="updateParameters()" oninput="document.getElementById('contrastValue').textContent = this.value">
                 <span id="contrastValue" class="value-display">1.0</span>
             </div>
 
-            <div class="reglage-groupe">
+            <div class="setting-group">
                 <label for="saturation">Saturation</label>
                 <input type="range" id="saturation" min="0" max="2" step="0.1" value="1"
-                       onchange="mettreAJourParametres()" oninput="document.getElementById('saturationValue').textContent = this.value">
+                       onchange="updateParameters()" oninput="document.getElementById('saturationValue').textContent = this.value">
                 <span id="saturationValue" class="value-display">1.0</span>
             </div>
 
-            <div class="reglage-groupe">
-                <label for="sharpness">Netteté</label>
+            <div class="setting-group">
+                <label for="sharpness">Sharpness</label>
                 <input type="range" id="sharpness" min="0" max="2" step="0.1" value="1"
-                       onchange="mettreAJourParametres()" oninput="document.getElementById('sharpnessValue').textContent = this.value">
+                       onchange="updateParameters()" oninput="document.getElementById('sharpnessValue').textContent = this.value">
                 <span id="sharpnessValue" class="value-display">1.0</span>
             </div>
         </div>
 
         <div id="autoCapturePanel" class="panel" style="display: none;">
-            <h2>Capture Automatique</h2>
-            <div class="reglage-groupe">
-                <label for="interval">Intervalle (secondes)</label>
+            <h2>Automatic Capture</h2>
+            <div class="setting-group">
+                <label for="interval">Interval (seconds)</label>
                 <input type="number" id="interval" min="5" value="60">
             </div>
-            <div class="reglage-groupe">
-                <label for="duration">Durée (minutes)</label>
+            <div class="setting-group">
+                <label for="duration">Duration (minutes)</label>
                 <input type="number" id="duration" min="1" value="60">
             </div>
-            <div class="boutons-container">
-                <button onclick="demarrerCaptureAuto()" class="btn btn-vert">Démarrer</button>
-                <button onclick="arreterCaptureAuto()" class="btn btn-rouge">Arrêter</button>
+            <div class="buttons-container">
+                <button onclick="startAutoCapture()" class="btn btn-green">Start</button>
+                <button onclick="stopAutoCapture()" class="btn btn-red">Stop</button>
             </div>
         </div>
     </div>
